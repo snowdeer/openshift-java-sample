@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: java-sample
+  labels:
+    app: java-sample
+spec:
+  template:
+    metadata:
+      labels:
+        app: java-sample
+    spec:
+      containers:
+      - image:  snowdeer/java-sample:latest
+        name: java-sample
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-sample
+  labels:
+    app: java-sample
+spec:
+  ports:
+  - name: java-sample
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: java-sample
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Route
+metadata:
+  name: java-sample
+  labels:
+    app: java-sample
+spec:
+  port: 
+    targetPort: java-sample
+  to:
+    kind: Service
+    name: java-sample
+    weight: 100
